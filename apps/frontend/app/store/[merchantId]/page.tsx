@@ -21,18 +21,33 @@ export async function generateMetadata({
 }: {
   params: StoreParams | Promise<StoreParams>;
 }): Promise<Metadata> {
-  const { merchantId } = await readParams(params);
-  const store = isSafeMerchantId(merchantId)
-    ? await loadStorefront(merchantId)
-    : null;
-  const title = store?.storeName ?? "Store";
-  const description =
-    store?.description || "Products from a verified Delego merchant.";
-  return {
-    title,
-    description,
-    openGraph: { title, description, type: "website" },
-  };
+  try {
+    const { merchantId } = await readParams(params);
+    const store = isSafeMerchantId(merchantId)
+      ? await loadStorefront(merchantId)
+      : null;
+    const title = store?.storeName ?? "Merchant Store | Delego";
+    const description =
+      store?.description || "Products from a verified Delego merchant.";
+    return {
+      title,
+      description,
+      openGraph: { title, description, type: "website" },
+    };
+  } catch (error) {
+    // Fallback metadata on API errors or timeouts to prevent 500 errors
+    const fallbackTitle = "Merchant Store | Delego";
+    const fallbackDescription = "Products from a verified Delego merchant.";
+    return {
+      title: fallbackTitle,
+      description: fallbackDescription,
+      openGraph: { 
+        title: fallbackTitle, 
+        description: fallbackDescription, 
+        type: "website" 
+      },
+    };
+  }
 }
 
 export default async function StorePage({
