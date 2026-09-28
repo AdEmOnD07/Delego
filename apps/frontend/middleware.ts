@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+import { sanitizeRedirectUrl } from "./lib/redirect";
 
 /**
  * Redirect-to-login middleware for protected routes (#406).
@@ -42,7 +43,9 @@ export function middleware(request: NextRequest) {
   }
 
   const loginUrl = new URL("/login", request.url);
-  loginUrl.searchParams.set("returnTo", pathname);
+  // Sanitised on the way out as well as in: the login page must still call
+  // sanitizeRedirectUrl on what it reads back, since the user can edit the URL.
+  loginUrl.searchParams.set("returnTo", sanitizeRedirectUrl(pathname));
   return NextResponse.redirect(loginUrl);
 }
 
