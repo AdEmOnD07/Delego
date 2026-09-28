@@ -59,5 +59,14 @@ export {
   PathPaymentWidget,
   type PathPaymentWidgetProps,
   type PathPaymentEstimate,
+  type PathPaymentQuote,
+  type LiquidityPoolReserves,
 } from "./PathPaymentWidget.js";
+export {
+  PathPaymentSlippageSlider,
+  calculateMinimumReceivedAmount,
+  calculateMaxSourceAmount,
+  calculatePriceImpactFromReserves,
+  type PathPaymentSlippageSliderProps,
+} from "./PathPaymentSlippageSlider.js";
 
