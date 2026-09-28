@@ -3594,3 +3594,121 @@ body {
   padding: 0;
   font-size: 0.8125rem;
 }
+
+/* ---------------------------------------------------------------------------
+   Escrow auto-release grace + delivery confirmation (#707, #708, #715)
+--------------------------------------------------------------------------- */
+
+/* Fixed top banner shown during the auto-release grace window. Sits below the
+   app header in stacking order but above page content. */
+.auto-release-grace-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 90;
+  padding: 0.625rem 1rem;
+  background: var(--color-warning-bg, #fffbeb);
+  border-bottom: 1px solid var(--color-warning-border, #fde68a);
+  color: var(--color-warning-text, #92400e);
+}
+
+.auto-release-grace-banner__inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+.auto-release-grace-banner__copy {
+  flex: 1 1 18rem;
+  margin: 0;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.auto-release-grace-banner__error {
+  max-width: 72rem;
+  margin: 0.375rem auto 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+/* Decorative release celebration (#707). The global prefers-reduced-motion
+   block zeroes animation durations, and <ConfettiBurst> skips rendering
+   entirely in that case, so this is purely additive. Per-particle travel and
+   flip are expressed as four variants rather than CSS custom properties so
+   the component only ever sets standard inline styles. */
+.release-confetti-piece {
+  position: absolute;
+  top: -12px;
+  width: 6px;
+  height: 10px;
+  border-radius: 1px;
+  opacity: 0;
+  animation-duration: 1500ms;
+  animation-timing-function: ease-in;
+  animation-fill-mode: forwards;
+}
+
+.release-confetti-piece--a {
+  animation-name: release-confetti-fall-a;
+}
+
+.release-confetti-piece--b {
+  animation-name: release-confetti-fall-b;
+}
+
+.release-confetti-piece--c {
+  animation-name: release-confetti-fall-c;
+}
+
+.release-confetti-piece--d {
+  animation-name: release-confetti-fall-d;
+}
+
+@keyframes release-confetti-fall-a {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-28px, 200px, 0) rotate(200deg);
+  }
+}
+
+@keyframes release-confetti-fall-b {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(32px, 200px, 0) rotate(-240deg);
+  }
+}
+
+@keyframes release-confetti-fall-c {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(-12px, 200px, 0) rotate(320deg);
+  }
+}
+
+@keyframes release-confetti-fall-d {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(18px, 200px, 0) rotate(-140deg);
+  }
+}
