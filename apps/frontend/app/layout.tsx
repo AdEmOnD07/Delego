@@ -14,6 +14,7 @@ import { TestnetFaucetBanner } from "../components/network/TestnetFaucetBanner";
 import { UpdatePromptToast } from "../components/pwa/UpdatePromptToast";
 import { themeBootstrapScript } from "../hooks/useTheme";
 import { a11yBootstrapScript } from "../hooks/useAccessibility";
+import { EXTERNAL_SCRIPTS } from "../lib/sri";
 
 export const metadata: Metadata = {
   title: {
@@ -61,6 +62,13 @@ export default async function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
         <script dangerouslySetInnerHTML={{ __html: a11yBootstrapScript }} />
+        {/* Externally referenced CDN scripts with Subresource Integrity (SRI) (#763) */}
+        <script
+          src={EXTERNAL_SCRIPTS.turnstile.src}
+          integrity={EXTERNAL_SCRIPTS.turnstile.integrity}
+          crossOrigin={EXTERNAL_SCRIPTS.turnstile.crossOrigin}
+          async
+        />
       </head>
 
       <body>
