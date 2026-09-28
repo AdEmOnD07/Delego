@@ -99,8 +99,7 @@ describe("PathPaymentSlippageSlider component", () => {
     const customInput = screen.getByLabelText(/custom slippage tolerance percent/i);
     expect(customInput).toBeInTheDocument();
 
-    await user.clear(customInput);
-    await user.type(customInput, "1.75");
+    fireEvent.change(customInput, { target: { value: "1.75" } });
 
     expect(handleChange).toHaveBeenCalledWith(1.75);
     expect(screen.getByTestId("current-slippage-badge")).toHaveTextContent("1.75%");

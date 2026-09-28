@@ -134,4 +134,74 @@ describe("PathPaymentWidget", () => {
       screen.getByText("No path payment route available for XLM → USDC.")
     ).toBeInTheDocument();
   });
+
+  it("omits the route row when the quote has no intermediate path", () => {
+    render(
+      <PathPaymentWidget
+        sourceAssetOptions={["XLM", "USDC"]}
+        destinationAsset="USDC"
+        destinationAmount="10.0000000"
+        sourceAsset="XLM"
+        onSourceAssetChange={vi.fn()}
+        estimate={{ ...mockEstimate, path: [] }}
+      />
+    );
+    expect(screen.queryByText("Route")).toBeNull();
+    expect(screen.getByText("50.2500000 XLM")).toBeDefined();
+  });
+
+  it("hides the quote and warnings when paying in the destination asset", () => {
+    render(
+      <PathPaymentWidget
+        sourceAssetOptions={["XLM", "USDC"]}
+        destinationAsset="USDC"
+        destinationAmount="10.0000000"
+        sourceAsset="USDC"
+        onSourceAssetChange={vi.fn()}
+        estimate={mockEstimate}
+      />
+    );
+    expect(screen.queryByText("You pay (max)")).toBeNull();
+    expect(screen.queryByRole("alert")).toBeNull();
+  });
+
+  it("reports the chosen source asset and resets a dismissed warning", async () => {
+    const user = userEvent.setup();
+    const onSourceAssetChange = vi.fn();
+    render(
+      <PathPaymentWidget
+        sourceAssetOptions={["XLM", "USDC"]}
+        destinationAsset="USDC"
+        destinationAmount="10.0000000"
+        sourceAsset="XLM"
+        onSourceAssetChange={onSourceAssetChange}
+        estimate={{ ...mockEstimate, slippageTolerancePercent: 2.5 }}
+      />
+    );
+
+    expect(screen.getByRole("alert").textContent).toContain("Market slippage (2.5%)");
+
+    await user.click(screen.getByLabelText("Dismiss slippage warning"));
+    expect(screen.queryByRole("alert")).toBeNull();
+
+    // Choosing a new asset clears the dismissal, so the warning returns.
+    await user.selectOptions(screen.getByLabelText("Pay with"), "USDC");
+    expect(onSourceAssetChange).toHaveBeenCalledWith("USDC");
+    expect(screen.getByRole("alert")).toBeDefined();
+  });
+
+  it("honours a custom slippage warning threshold", () => {
+    render(
+      <PathPaymentWidget
+        sourceAssetOptions={["XLM", "USDC"]}
+        destinationAsset="USDC"
+        destinationAmount="10.0000000"
+        sourceAsset="XLM"
+        onSourceAssetChange={vi.fn()}
+        estimate={{ ...mockEstimate, slippageTolerancePercent: 1.0 }}
+        slippageWarningThresholdPercent={0.5}
+      />
+    );
+    expect(screen.getByRole("alert").textContent).toContain("Market slippage (1%)");
+  });
 });

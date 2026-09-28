@@ -69,4 +69,11 @@ export {
   calculatePriceImpactFromReserves,
   type PathPaymentSlippageSliderProps,
 } from "./PathPaymentSlippageSlider.js";
+export {
+  ProductCard,
+  type ProductCardProps,
+  type RecommendedProduct,
+  type Currency,
+} from "./ProductCard.js";
+
 
